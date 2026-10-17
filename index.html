@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARAMI Countdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+
+        :root {
+            --bg: #050505;
+            --panel: #0f0f0f;
+            --accent: #00ff88;
+            --text: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .countdown-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--panel);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.05);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .result-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px dashed #444;
+        }
+
+        .days-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .label-text {
+            font-size: 1.2rem;
+            color: #ccc;
+            letter-spacing: 2px;
+        }
+
+        .detail-info {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="countdown-container">
+    <h1>&gt;_ COUNTDOWN</h1>
+    
+    <div class="input-group">
+        <label>EVENT NAME</label>
+        <input type="text" id="eventName" placeholder="例: 誕生日、テスト、発売日">
+    </div>
+
+    <div class="input-group">
+        <label>TARGET DATE</label>
+        <input type="date" id="targetDate">
+    </div>
+
+    <button class="btn-calc" onclick="calculateDays()">CALCULATE</button>
+
+    <div class="result-display" id="resultArea" style="display:none;">
+        <div class="days-count" id="daysCount">0</div>
+        <div class="label-text">DAYS LEFT</div>
+        <div class="detail-info" id="detailInfo"></div>
+    </div>
+</div>
+
+<script>
+    function calculateDays() {
+        const name = document.getElementById('eventName').value || "Event";
+        const dateInput = document.getElementById('targetDate').value;
+        
+        if (!dateInput) return alert("日付を選択してください！");
+
+        const target = new Date(dateInput);
+        const today = new Date();
+        
+        // 時刻を00:00:00にリセットして日数だけを比較
+        today.setHours(0, 0, 0, 0);
+        target.setHours(0, 0, 0, 0);
+
+        const diffTime = target - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const resultArea = document.getElementById('resultArea');
+        const daysCount = document.getElementById('daysCount');
+        const labelText = document.querySelector('.label-text');
+        const detailInfo = document.getElementById('detailInfo');
+
+        resultArea.style.display = 'block';
+        daysCount.textContent = Math.abs(diffDays);
+
+        if (diffDays > 0) {
+            labelText.textContent = "DAYS LEFT";
+            detailInfo.textContent = `「${name}」まであと${diffDays}日`;
+        } else if (diffDays < 0) {
+            labelText.textContent = "DAYS PASSED";
+            detailInfo.textContent = `「${name}」から${Math.abs(diffDays)}日前`;
+        } else {
+            labelText.textContent = "TODAY IS THE DAY!";
+            detailInfo.textContent = `今日は「${name}」です！`;
+        }
+    }
+</script>
+
+</body>
+</html>
